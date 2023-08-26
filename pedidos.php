@@ -1,11 +1,17 @@
+<?php include_once 'produto.php';
+
+$produto = new Produto();
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aba de pedidos</title>
     <link rel="stylesheet" href="css/carrinho.css">
 </head>
+
 <body>
     <div class="models">
         <div class="salgados-key" data-key="s">
@@ -34,7 +40,7 @@
 
     <!--menu-openner mobile-->
     <header>
-        <h1>Pastel do Zé Rato</h1>
+        <h1>Pastelaria Beira Mar</h1>
         <div class="menu-openner"><span>0</span>🛒</div>
     </header>
     <!--/menu-openner mobile-->
@@ -42,9 +48,49 @@
     <!--Conteúdo Principal-->
     <main>
         <h2>Salgados</h2>
-        <div class="salgado-area"></div>
+        <div class="salgado-area">
+            <?php
+            $resultado = $produto->buscar();
+            while ($row = $resultado->fetch_assoc()) {
+                if ($row['tipo'] == 'salgado') {
+            ?>
+                    <div class="produtos-item-pasteis" data-key="undefined">
+                        <a href="">
+                            <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
+                            <div class="produto-item-pastel-add">+</div>
+                        </a>
+                        <br>
+                        <div class="produto-item-pastel-price">R$ <?= $row['price'] ?></div>
+                        <div class="produto-item-pastel-name"><?= $row['name'] ?></div>
+                        <div class="produto-item-pastel-desc"><?= $row['description'] ?></div>
+                    </div>
+            <?php }
+            } ?>
+        </div>
+
         <h3>Pastéis</h3>
-        <div class="pastel-area"></div>
+        <div class="pastel-area">
+            <?php
+            $resultado = $produto->buscar();
+            while ($row = $resultado->fetch_assoc()) {
+                if ($row['tipo'] == 'pastel') {
+            ?>
+                    <div class="produtos-item-pasteis" data-key="undefined">
+                        <a href="">
+                            <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
+                            <div class="produto-item-pastel-add">+</div>
+                        </a>
+                        <br>
+                        <div class="produto-item-pastel-price">R$ <?= $row['price'] ?></div>
+                        <div class="produto-item-pastel-name"><?= $row['name'] ?></div>
+                        <div class="produto-item-pastel-desc"><?= $row['description'] ?></div>
+                    </div>
+
+            <?php }
+            } ?>
+        </div>
+
+        </div>
     </main>
     <!--/Conteúdo Principal-->
 
@@ -87,7 +133,7 @@
                     <div data-key="CC" class="salgadosInfo-sabores"><span></span></div>
                     <div data-key="CF" class="salgadosInfo-sabores"><span></span></div>
                 </div>
-                
+
                 <div class="salgadoInfo--pricearea">
                     <div class="salgadoInfo--sector">Preço</div>
                     <div class="salgadoInfo--price">
@@ -141,7 +187,7 @@
                     <div data-key="PCCQ" class="salgadosInfo-sabores"><span></span></div>
                     <div data-key="PCCM" class="salgadosInfo-sabores"><span></span></div>
                 </div>
-                
+
                 <div class="pastelInfo--pricearea">
                     <div class="pastelInfo--sector">Preço</div>
                     <div class="pastelInfo--price">
@@ -160,8 +206,9 @@
     </div>
     <!--/Janela modal pastéisWindowArea-->
 
-    <script src="js/principal.js"></script>
+
     <script src="js/salgados.js"></script>
     <script src="js/pasteis.js"></script>
 </body>
+
 </html>
