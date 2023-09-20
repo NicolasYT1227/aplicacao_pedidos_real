@@ -1,9 +1,11 @@
 <?php include_once 'produto.php';
 
 $produto = new Produto();
+
+$salgadoJson = array();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -40,7 +42,7 @@ $produto = new Produto();
 
     <!--menu-openner mobile-->
     <header>
-        <h1>Pastelaria Beira Mar</h1>
+        <h1>Pastel do Zé Rato</h1>
         <div class="menu-openner"><span>0</span>🛒</div>
     </header>
     <!--/menu-openner mobile-->
@@ -52,18 +54,29 @@ $produto = new Produto();
             <?php
             $resultado = $produto->buscar();
             while ($row = $resultado->fetch_assoc()) {
+                $salgadoJson[] = array(
+                    'nome' => $row['name'],
+                    'img' => $row['img'],
+                    'price' => $row['price'],
+                    'description' => $row['description'],
+                    'tipo' => $row['tipo']
+                );
+                
                 if ($row['tipo'] == 'salgado') {
+
             ?>
-                    <div class="produtos-item-pasteis" data-key="undefined">
-                        <a href="">
-                            <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
-                            <div class="produto-item-pastel-add">+</div>
-                        </a>
-                        <br>
-                        <div class="produto-item-pastel-price">R$ <?= $row['price'] ?></div>
-                        <div class="produto-item-pastel-name"><?= $row['name'] ?></div>
-                        <div class="produto-item-pastel-desc"><?= $row['description'] ?></div>
-                    </div>
+                    <div class="salgado-area-produto1">
+                        <div class="produtos-item-pasteis" data-key="<?= $row["tipo"] == 'salgado'?>">
+                            <a href="">
+                                <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
+                                <div class="produto-item-pastel-add">+</div>
+                            </a>
+                            <br>
+                            <div class="produto-item-pastel-price">R$ <?= $row['price'] ?></div>
+                            <div class="produto-item-pastel-name"><?= $row['name'] ?></div>
+                            <div class="produto-item-pastel-desc"><?= $row['description'] ?></div>
+                        </div>
+                    </div>  
             <?php }
             } ?>
         </div>
@@ -75,7 +88,7 @@ $produto = new Produto();
             while ($row = $resultado->fetch_assoc()) {
                 if ($row['tipo'] == 'pastel') {
             ?>
-                    <div class="produtos-item-pasteis" data-key="undefined">
+                    <div class="produtos-item-pasteis" data-key="<?= $row["tipo"] == 'salgado' ?>;">
                         <a href="">
                             <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
                             <div class="produto-item-pastel-add">+</div>
@@ -116,6 +129,7 @@ $produto = new Produto();
     <!-- /aside do carrinho -->
 
     <!-- janela modal .salgadoWindowArea -->
+    <div class="myModal">
     <div class="salgadoWindowArea">
         <div class="salgadoWindowBody">
             <div class="salgadoInfo--cancelMobileButton">Voltar</div>
@@ -123,9 +137,10 @@ $produto = new Produto();
                 <img src="" />
             </div>
             <div class="salgadosInfo">
-                <h1>--</h1>
+                <div class="salgadoInfo--nome"></div>
                 <div class="salgadoInfo--img"><img src="" /></div>
                 <div class="salgadoInfo--desc">--</div>
+                <div class="salgadoInfo--tipo"></div>
                 <div class="salgadosInfo-sabores">
                     <div data-key="RC" class="salgadosInfo-sabores"><span></span></div>
                     <div data-key="RP" class="salgadosInfo-sabores"><span></span></div>
@@ -149,6 +164,7 @@ $produto = new Produto();
                 <div class="salgadoInfo--cancelButton">Cancelar</div>
             </div>
         </div>
+    </div>
     </div>
     <!-- /janela modal .salgadoWindowArea -->
 
@@ -206,6 +222,9 @@ $produto = new Produto();
     </div>
     <!--/Janela modal pastéisWindowArea-->
 
+    <script>
+        let foodJson = <?php echo json_encode($salgadoJson); ?>;
+    </script>
 
     <script src="js/salgados.js"></script>
     <script src="js/pasteis.js"></script>

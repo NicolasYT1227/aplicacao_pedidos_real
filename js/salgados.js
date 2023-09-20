@@ -1,59 +1,27 @@
+// Funções de seleção
 const selecione = (elemento) => document.querySelector(elemento);
 const selecioneTodos = (elemento) => document.querySelectorAll(elemento);
 
+// Variáveis globais
 let modalKey = 0;
 let quantSalgados = 1;
 let cart = [];
+let produtoSelecionado = null;
 
-const valorReal = (valor) => {
-  return valor.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
-};
-
-const formatoMonetario = (valor) => {
-  if (valor) {
-    return valor.toFixed(2);
-  }
-};
+// Funções utilitárias
+const valorReal = (valor) => valor.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
 
 const pegarKey = (e) => {
-  let key = e.target.closest('.salgados-item').getAttribute('data-key')
-  console.log("Salgado Clicado " + modalKey);
-  console.log(foodJson[key]);
+  let key = e.target.closest('.produtos-item-pasteis1').getAttribute('data-key');
+  console.log("Salgado Clicado " + key);
+
+  // Use os dados do salgadoJson com base na chave e armazene-os em produtoSelecionado
+  produtoSelecionado = foodJson[key];
 
   quantSalgados = 1;
-
   modalKey = key;
 
   return key;
-};
-
-const abrirModal = () => {
-  selecione(".salgadoWindowArea").style.opacity = 0;
-  selecione(".salgadoWindowArea").style.display = "flex";
-  setTimeout(() => {
-    selecione(".salgadoWindowArea").style.opacity = 1;
-  }, 150);
-};
-
-const fecharModal = () => {
-  selecione(".salgadoWindowArea").style.opacity = 0;
-  setTimeout(() => {
-    selecione(".salgadoWindowArea").style.display = "none";
-  }, 500);
-};
-
-const botaoFechar = () => {
-  selecioneTodos(".salgadoInfo--cancelButton, .salgadoInfo--cancelMobileButton").forEach((item) => {
-    item.addEventListener("click", fecharModal);
-  });
-};
-
-const preencheDados = (pedidoSalgados, item, index) => {
-  pedidoSalgados.setAttribute('data-key', index)
-  pedidoSalgados.querySelector(".produto-item-img img").src = item.img;
-  pedidoSalgados.querySelector(".produto-item-price").innerHTML = `R$ ${item.price.toFixed(2)}`;
-  pedidoSalgados.querySelector(".produto-item-name").innerHTML = item.name;
-  pedidoSalgados.querySelector(".produto-item-desc").innerHTML = item.description;
 };
 
 const mudarQuant = () => {
@@ -70,33 +38,65 @@ const mudarQuant = () => {
   });
 };
 
-const adicionaCarrinho = () => {
-  selecione(".salgadoInfo--addButton").addEventListener('click', () => {
-    
-    let priceSalgado = selecione(".salgadoInfo--actualPrice").innerHTML.replace('R$ ', '');
+const botaoFechar = () => {
+  selecioneTodos(".salgadoInfo--cancelButton, .salgadoInfo--cancelMobileButton").forEach((item) => {
+    item.addEventListener("click", fecharModal);
+  });
+};
 
-    let size = selecione(".salgadosInfo-sabores").getAttribute('data-key')
-    console.log("Sabor" + size);
+// Função para abrir a modal
+const abrirModal = () => {
+  const modal = selecione(".salgadoWindowArea");
+  modal.style.opacity = 0;
+  modal.style.display = "flex";
+  setTimeout(() => {
+    modal.style.opacity = 1;
 
-    console.log(modalKey);
-    let identificador =size;
-    console.log("Quant " + quantSalgados);
+    // Preencha os dados da modal somente quando ela for aberta
+    if (produtoSelecionado) {
+      preencheDadosModal(produtoSelecionado);
+    }
+  }, 150);
+};
 
-    let keyCart = cart.findIndex((item) => item.identificador == identificador);
-    console.log(keyCart);
+// Função para fechar a modal
+const fecharModal = () => {
+  const modal = selecione(".salgadoWindowArea");
+  modal.style.opacity = 0;
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 500);
+};
+
+// Função para lidar com o clique em um salgado
+const handleSalgadoClick = (e) => {
+  e.preventDefault();
+
+  abrirModal();
+};
+
+// Função para adicionar um salgado ao carrinho
+const adicionarAoCarrinho = () => {
+  selecione(".salgadoInfo--addButton").addEventListener("click", () => {
+    const priceSalgado = parseFloat(selecione(".salgadoInfo--actualPrice").innerHTML.replace('R$ ', ''));
+    const size = selecione(".salgadosInfo--tipo").getAttribute('data-key');
+    const identificador = size;
+    const keyCart = cart.findIndex((item) => item.identificador === identificador);
 
     if (keyCart > -1) {
       cart[keyCart].qt += quantSalgados;
     } else {
-      let salgado = {
+      const salgado = {
         identificador,
         id: size,
         qt: quantSalgados,
-        price: parseFloat(priceSalgado)
-    }
+        nomeSalgado: salgadoJson[modalKey].nome, // Nome do salgado
+        imgSalgado: salgadoJson[modalKey].img,   // URL da imagem do salgado
+        priceSalgado: salgadoJson[modalKey].price, // Preço do salgado
+        descriptionSalgado: salgadoJson[modalKey].description, // Descrição do salgado
+        tipoSalgado: salgadoJson[modalKey].tipo
+      };
       cart.push(salgado);
-      console.log(salgado);
-      console.log('Sub total R$ ' + (quantSalgados * priceSalgado).toFixed(2))
     }
 
     fecharModal();
@@ -106,94 +106,66 @@ const adicionaCarrinho = () => {
   });
 };
 
+// Função para atualizar o carrinho
 const atualizarCarrinho = () => {
-  // exibir número de itens no carrinho
-selecione('.menu-openner span').innerHTML = cart.length
+  // Exibir o número de itens no carrinho
+  selecione('.menu-openner span').innerHTML = cart.length;
 
-// mostrar ou nao o carrinho
-if(cart.length > 0) {
+  // Mostrar ou ocultar o carrinho
+  if (cart.length > 0) {
+    selecione('aside').classList.add('show');
+    selecione('.cart').innerHTML = '';
 
-  // mostrar o carrinho
-  selecione('aside').classList.add('show')
+    let subtotal = 0;
 
-  // zerar meu .cart para nao fazer insercoes duplicadas
-  selecione('.cart').innerHTML = ''
+    for (let i in cart) {
+      // Alterado para usar cart[i].id para encontrar o salgado
+      const salgadoItem = foodJson.find((item) => item.id == cart[i].id); 
 
-  // crie as variaveis antes do for
-  let subtotal = 0
-  let desconto = 0
-  let total    = 0
+      subtotal += cart[i].priceSalgado * cart[i].qt;
 
-  // para preencher os itens do carrinho, calcular subtotal
-  for(let i in cart) {
-    // use o find para pegar o item por id
-    let salgadoItem = foodJson.find( (item) => item.id == cart[i].id )
-    console.log(salgadoItem)
+      const cartItem = selecione('.models .cart-produtos').cloneNode(true);
+      selecione('.cart').append(cartItem);
 
-    // em cada item pegar o subtotal
-    subtotal += cart[i].price * cart[i].qt
-    //console.log(cart[i].price)
+      const salgadoSizeName = cart[i].tipoSalgado;
+      const salgadoName = `${salgadoItem.nomeSalgado} (${salgadoSizeName})`; // Corrigido para usar nomeSalgado
 
-    // fazer o clone, exibir na telas e depois preencher as informacoes
-    let cartItem = selecione('.models .cart-produtos').cloneNode(true)
-    selecione('.cart').append(cartItem)
+      cartItem.querySelector('img').src = salgadoItem.imgSalgado;
+      cartItem.querySelector('.cart-produto-name').innerHTML = salgadoName;
+      cartItem.querySelector('.cart-produto-qt').innerHTML = cart[i].qt;
 
-    let salgadoSizeName = cart[i].size
+      cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
+        cart[i].qt++;
+        atualizarCarrinho();
+      });
 
-    let salgadoName = `${salgadoItem.name} (${salgadoSizeName})`
+      cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
+        if (cart[i].qt > 1) {
+          cart[i].qt--;
+        } else {
+          cart.splice(i, 1);
+        }
+        if (cart.length < 1) {
+          selecione('header').style.display = 'flex';
+        }
+        atualizarCarrinho();
+      });
 
-    // preencher as informacoes
-    cartItem.querySelector('img').src = salgadoItem.img
-    cartItem.querySelector('.cart-produto-name').innerHTML = salgadoName
-    cartItem.querySelector('.cart-produto-qt').innerHTML = cart[i].qt
+      selecione('.cart').append(cartItem);
+    }
 
-    // selecioner botoes + e -
-    cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
-      console.log('Clicou no botão mais')
-      // adicionar apenas a quantidade que esta neste contexto
-      cart[i].qt++
-      // atualizar a quantidade
-      atualizarCarrinho()
-    })
+    const total = subtotal;
+    selecione('.subtotal span:last-child').innerHTML = valorReal(subtotal);
+    selecione('.total span:last-child').innerHTML = valorReal(total);
+  } else {
+    selecione('aside').classList.remove('show');
+    selecione('aside').style.left = '100vw';
+  }
+};
 
-    cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
-      console.log('Clicou no botão menos')
-      if(cart[i].qt > 1) {
-        // subtrair apenas a quantidade que esta neste contexto
-        cart[i].qt--
-      } else {
-        // remover se for zero
-        cart.splice(i, 1)
-      }
-
-        (cart.length < 1) ? selecione('header').style.display = 'flex' : ''
-
-      // atualizar a quantidade
-      atualizarCarrinho()
-    })
-
-    selecione('.cart').append(cartItem)
-
-  } // fim do for
-
-  // fora do for
-  total = subtotal
-
-  // exibir na tela os resultados
-  // selecioner o ultimo span do elemento
-  selecione('.subtotal span:last-child').innerHTML = valorReal(subtotal)
-  selecione('.total span:last-child').innerHTML    = valorReal(total)
-
-} else {
-  // ocultar o carrinho
-  selecione('aside').classList.remove('show')
-  selecione('aside').style.left = '100vw'
-}
-}
-
+// Função para finalizar a compra
 const finalizarCompra = () => {
   selecione('.cart--finalizar').addEventListener('click', () => {
-    console.log('Finalizar compra');
     cart = [];
     selecione(".menu-openner span").innerHTML = 0;
     selecione('aside').classList.remove('show');
@@ -203,8 +175,8 @@ const finalizarCompra = () => {
   });
 };
 
+// Função para abrir o carrinho
 const abrirCarrinho = () => {
-  console.log('Qtd do carrinho: ' + cart.length);
   if (cart.length > 0) {
     selecione('aside').classList.add('show');
     selecione('header').style.display = 'flex';
@@ -216,6 +188,7 @@ const abrirCarrinho = () => {
   });
 };
 
+// Função para fechar o carrinho
 const fecharCarrinho = () => {
   selecione(".menu-closer").addEventListener('click', () => {
     selecione('aside').style.left = '100vw';
@@ -223,35 +196,32 @@ const fecharCarrinho = () => {
   });
 };
 
-const preencheDadosModal = (item) => {
-  selecione(".salgadoBig img").src = item.img;
-  selecione(".salgadosInfo h1").innerHTML = item.name;
-  selecione(".salgadoInfo--desc").innerHTML = item.description;
-  selecione(".salgadosInfo-sabores").setAttribute('data-key', item.id);  
-  selecione(".salgadoInfo--actualPrice").innerHTML = `R$ ${item.price.toFixed(2)}`;
+// Função para preencher dados da modal (você deve implementar isso)
+const preencheDadosModal = (salgadoJson) => {
+  selecione(".salgadoInfo--nome").textContent = salgadoJson.nome;
+  selecione(".salgadoInfo--price").textContent = valorReal(salgadoJson.price);
+  selecione(".salgadoInfo--desc").textContent = salgadoJson.description;
+  selecione(".salgadoInfo--img").src = salgadoJson.img;
+  
+  // Abra a modal após preencher os dados
+  abrirModal();
 };
 
-foodJson.map((item, index) => {
-  let pedidoSalgados = document.querySelector(".models .produtos-item").cloneNode(true);
 
-  selecione(".salgado-area").appendChild(pedidoSalgados);
-
-  preencheDados(pedidoSalgados, item, index);
-
-  pedidoSalgados.querySelector(".produtos-item a").addEventListener("click", (event) => {
-    event.preventDefault();
-
-    abrirModal();
-
-    preencheDadosModal(item);
+// Função principal para inicializar tudo
+const iniciar = () => {
+  // Selecione os elementos e adicione os ouvintes de eventos aqui
+  const produtosItems = selecioneTodos(".salgado-area .salgado-area-produto1");
+  produtosItems.forEach((produtoItem) => {
+    produtoItem.addEventListener("click", handleSalgadoClick);
   });
 
   botaoFechar();
-});
+  mudarQuant();
+  adicionarAoCarrinho();
+  abrirCarrinho();
+  fecharCarrinho();
+  finalizarCompra();
+};
 
-mudarQuant();
-adicionaCarrinho();
-abrirCarrinho()
-fecharCarrinho()
-atualizarCarrinho()
-finalizarCompra()
+iniciar();
