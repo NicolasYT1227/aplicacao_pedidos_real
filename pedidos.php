@@ -3,6 +3,7 @@
 $produto = new Produto();
 
 $salgadoJson = array();
+$pastelJson = array();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -49,6 +50,7 @@ $salgadoJson = array();
 
     <!--Conteúdo Principal-->
     <main>
+        <!--Size Salgados-->
         <h2>Salgados</h2>
         <div class="salgado-area">
             <?php
@@ -80,15 +82,25 @@ $salgadoJson = array();
             <?php }
             } ?>
         </div>
-
+        <!--/Size Salgados-->
+        
+        <!--Size Pasteis-->
         <h3>Pastéis</h3>
         <div class="pastel-area">
             <?php
             $resultado = $produto->buscar();
             while ($row = $resultado->fetch_assoc()) {
+                $pastelJson[] = array(
+                    'nome' => $row['name'],
+                    'img' => $row['img'],
+                    'price' => $row['price'],
+                    'description' => $row['description'],
+                    'tipo' => $row['tipo']
+                );
+
                 if ($row['tipo'] == 'pastel') {
             ?>
-                    <div class="produtos-item-pasteis" data-key="<?= $row["tipo"] == 'salgado' ?>;">
+                    <div class="produtos-item-pasteis" data-key="<?= $row["tipo"] == 'pastel' ?>;">
                         <a href="">
                             <div class="produto-item-pastel-img"><img src="<?= $row['img'] ?>"></div>
                             <div class="produto-item-pastel-add">+</div>
@@ -102,6 +114,31 @@ $salgadoJson = array();
             <?php }
             } ?>
         </div>
+        <!--/Size Pasteis-->
+
+        <!--Size Bebidas-->
+        <h4>Bebidas</h4>
+        <div class="bebida-area">
+            <?php
+            $resultado = $produto->buscar();
+            while ($row = $resultado->fetch_assoc()) {
+                if($row['tipo'] == 'bebida') {
+            ?>
+                    <div class="produtos-item-bebidas" data-key="<?= $row["tipo"] == 'bebida' ?>;">
+                        <a href="">
+                            <div class="produto-item-bebida-img"><img src="<?= $row['img'] ?>"></div>
+                            <div class="produto-item-bebida-add">+</div>
+                        </a>
+                        <div class="produto-item-bebida-price"><?= $row['price'] ?></div>
+                        <div class="produto-item-bebida-name"><?= $row['name'] ?></div>
+                        <div class="produto-item-bebida-desc"><?= $row['description'] ?></div>
+                    </div>
+
+            <?php }
+            } ?> 
+           
+        </div>
+        <!--/Size Bebidas-->
 
         </div>
     </main>
@@ -129,7 +166,6 @@ $salgadoJson = array();
     <!-- /aside do carrinho -->
 
     <!-- janela modal .salgadoWindowArea -->
-    <div class="myModal">
     <div class="salgadoWindowArea">
         <div class="salgadoWindowBody">
             <div class="salgadoInfo--cancelMobileButton">Voltar</div>
@@ -164,7 +200,6 @@ $salgadoJson = array();
                 <div class="salgadoInfo--cancelButton">Cancelar</div>
             </div>
         </div>
-    </div>
     </div>
     <!-- /janela modal .salgadoWindowArea -->
 
@@ -222,8 +257,67 @@ $salgadoJson = array();
     </div>
     <!--/Janela modal pastéisWindowArea-->
 
+    <!--Modelos de bebidas-->
+    <div class="models">
+        <div class="bebidas-key" data-key="s">
+            <div class="produtos-item">
+                <a href="">
+                    <div class="produto-item-bebida-img"><img src="" /></div>
+                    <div class="produto-item-bebida-add">+</div>
+                </a>
+                <br>
+                <div class="produto-item-bebida-price">R$</div>
+                <div class="produto-item-bebida-name">--</div>
+                <div class="produto-item-bebida-desc">--</div>
+            </div>
+        </div>
+
+        <div class="cart-produtos" data-key="CART">
+            <img src="" />
+            <div class="cart-produto-name">--</div>
+            <div class="cart-produto-area">
+                <button class="cart-produto-qtmenos">-</button>
+                <div class="cart-produto-qt">1</div>
+                <button class="cart-produto-qtmais">+</button>
+            </div>
+        </div>
+    </div>
+    <!--/Modelos de bebidas-->
+
+    <!--Modal bebidas-->
+    <div class="bebidaWindowArea">
+        <div class="bebidaWindowBody">
+            <div class="bebidaInfo--cancelMobileButton">Voltar</div>
+            <div class="bebidaBig">
+                <img src="" />
+            </div>
+            <div class="bebidasInfo">
+                <h1>--</h1>
+                <div class="bebidaInfo--img"><img src="" /></div>
+                <div class="bebidaInfo--desc">--</div>
+                <div class="bebidaInfo-sabores"></div>
+
+                <div class="bebidaInfo--pricearea">
+                    <div class="bebidaInfo--sector">Preço</div>
+                    <div class="bebidaInfo--price">
+                        <div class="bebidaInfo--actualPrice">R$ --</div>
+                        <div class="bebidaInfo--qtarea">
+                            <button class="bebidaInfo--qtmenos">-</button>
+                            <div class="bebidaInfo--qt">1</div>
+                            <button class="bebidaInfo--qtmais">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bebidaInfo--addButton">Adicionar ao carrinho</div>
+                <div class="bebidaInfo--cancelButton">Cancelar</div>
+            </div>
+        </div>
+    </div>
+    <!--/Modal bebidas-->
+
     <script>
         let foodJson = <?php echo json_encode($salgadoJson); ?>;
+        let pastel = <?php echo json_encode($pastelJson); ?>;
     </script>
 
     <script src="js/salgados.js"></script>

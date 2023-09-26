@@ -72,14 +72,22 @@ const fecharModal = () => {
 const handleSalgadoClick = (e) => {
   e.preventDefault();
 
+  let pai = e.target.parentElement;
+  selecione(".salgadoBig").getElementsByTagName('img')[0].src = pai.querySelector('.produto-item-pastel-img').firstChild.src;
+
+  let avo = e.target.parentElement.parentElement;    
+  selecione(".salgadoInfo--nome").textContent = avo.querySelector('.produto-item-pastel-name').textContent;
+  selecione(".salgadoInfo--price").textContent = avo.querySelector('.produto-item-pastel-price').textContent;
+  selecione(".salgadoInfo--desc").textContent = avo.querySelector('.produto-item-pastel-desc').textContent; 
+  
   abrirModal();
 };
 
 // Função para adicionar um salgado ao carrinho
 const adicionarAoCarrinho = () => {
   selecione(".salgadoInfo--addButton").addEventListener("click", () => {
-    const priceSalgado = parseFloat(selecione(".salgadoInfo--actualPrice").innerHTML.replace('R$ ', ''));
-    const size = selecione(".salgadosInfo--tipo").getAttribute('data-key');
+    const priceSalgado = parseFloat(selecione(".pastelInfo--actualPrice").innerHTML.replace(valorReal));
+    const size = selecione(".salgadosInfo-sabores").getAttribute('data-key');
     const identificador = size;
     const keyCart = cart.findIndex((item) => item.identificador === identificador);
 
@@ -90,11 +98,7 @@ const adicionarAoCarrinho = () => {
         identificador,
         id: size,
         qt: quantSalgados,
-        nomeSalgado: salgadoJson[modalKey].nome, // Nome do salgado
-        imgSalgado: salgadoJson[modalKey].img,   // URL da imagem do salgado
-        priceSalgado: salgadoJson[modalKey].price, // Preço do salgado
-        descriptionSalgado: salgadoJson[modalKey].description, // Descrição do salgado
-        tipoSalgado: salgadoJson[modalKey].tipo
+        price: priceSalgado,
       };
       cart.push(salgado);
     }
@@ -130,7 +134,7 @@ const atualizarCarrinho = () => {
       const salgadoSizeName = cart[i].tipoSalgado;
       const salgadoName = `${salgadoItem.nomeSalgado} (${salgadoSizeName})`; // Corrigido para usar nomeSalgado
 
-      cartItem.querySelector('img').src = salgadoItem.imgSalgado;
+      cartItem.querySelector('img').src = salgadoItem.img;
       cartItem.querySelector('.cart-produto-name').innerHTML = salgadoName;
       cartItem.querySelector('.cart-produto-qt').innerHTML = cart[i].qt;
 
@@ -195,18 +199,6 @@ const fecharCarrinho = () => {
     selecione('header').style.display = 'flex';
   });
 };
-
-// Função para preencher dados da modal (você deve implementar isso)
-const preencheDadosModal = (salgadoJson) => {
-  selecione(".salgadoInfo--nome").textContent = salgadoJson.nome;
-  selecione(".salgadoInfo--price").textContent = valorReal(salgadoJson.price);
-  selecione(".salgadoInfo--desc").textContent = salgadoJson.description;
-  selecione(".salgadoInfo--img").src = salgadoJson.img;
-  
-  // Abra a modal após preencher os dados
-  abrirModal();
-};
-
 
 // Função principal para inicializar tudo
 const iniciar = () => {
