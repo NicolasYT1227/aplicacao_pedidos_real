@@ -1,12 +1,25 @@
+<?php
+     
+    function destroyLogin()
+    {
+        session_start();
+        session_reset();
+        header("location: loginAdm.php");
+        exit;
+    }
+
+    destroyLogin();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>API Vôlei</title>
+    <title>Painel de ADM</title>
 
-    <link rel="icon" href="https://cdn2.iconfinder.com/data/icons/endless-summer/561/beach_volleyball_sport_summer_ball_sport-512.png">
+    <link rel="icon" href="https://static.vecteezy.com/system/resources/previews/000/288/903/original/administration-vector-icon.jpg">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
@@ -60,12 +73,19 @@
                     </span>
                     <h3>Novo login</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="userBtn">
+                    <span class="material-symbols-outlined">
+                        settings
+                    </span>
+                    <h3>Conta</h3>
+                </a>
+                <a href="<?php destroyLogin(); ?>">
                     <span class="material-symbols-outlined">
                         logout
                     </span>
                     <h3>Sair</h3>
                 </a>
+
             </div>
         </aside>
         <!--End Modal-Menu-->

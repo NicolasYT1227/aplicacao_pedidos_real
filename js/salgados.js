@@ -80,14 +80,14 @@ const handleSalgadoClick = (e) => {
   selecione(".salgadoInfo--price").textContent = avo.querySelector('.produto-item-pastel-price').textContent;
   selecione(".salgadoInfo--desc").textContent = avo.querySelector('.produto-item-pastel-desc').textContent; 
   
-  abrirModal();
+  abrirModal(); 
 };
 
 // Função para adicionar um salgado ao carrinho
 const adicionarAoCarrinho = () => {
   selecione(".salgadoInfo--addButton").addEventListener("click", () => {
     const priceSalgado = parseFloat(selecione(".pastelInfo--actualPrice").innerHTML.replace(valorReal));
-    const size = selecione(".salgadosInfo-sabores").getAttribute('data-key');
+    const size = selecione(".salgado-area").getAttribute('data-key');
     const identificador = size;
     const keyCart = cart.findIndex((item) => item.identificador === identificador);
 

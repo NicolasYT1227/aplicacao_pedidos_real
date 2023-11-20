@@ -4,6 +4,8 @@ $produto = new Produto();
 
 $salgadoJson = array();
 $pastelJson = array();
+$lancheJson = array();
+$bebidaJson = array();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -111,10 +113,35 @@ $pastelJson = array();
                         <div class="produto-item-pastel-desc"><?= $row['description'] ?></div>
                     </div>
 
-            <?php }
+                <?php }
             } ?>
         </div>
         <!--/Size Pasteis-->
+        
+        <!--Size Lanches-->
+        <h4>Lanches</h4>
+        <div class="lanche-area">
+            <?php
+                $resultado = $produto->buscar();
+                while($row = $resultado->fetch_assoc()){
+                    if($row['tipo'] == 'lanche') {
+                ?>
+                <div class="laches-key" data-key="<?= $row["tipo"] == 'lanche' ?>;">
+                    <div class="produtos-item-lanches">
+                        <a href="">
+                        <div class="produto-item-lanche-img"><img src="<?= $row['img']; ?>;" /></div>
+                        <div class="produto-item-lanche-add">+</div>
+                        </a>
+                        <br>
+                        <div class="produto-item-lanche-price">R$<?= $row['price'] ?></div>
+                        <div class="produto-item-lanche-name"><?= $row['name']; ?></div>
+                        <div class="produto-item-lanche-desc"><?= $row['description']; ?></div>
+                    </div>
+                </div>
+        <?php }
+        } ?>
+        </div>
+        <!--/Size Lanches-->
 
         <!--Size Bebidas-->
         <h4>Bebidas</h4>
@@ -256,6 +283,64 @@ $pastelJson = array();
         </div>
     </div>
     <!--/Janela modal pastéisWindowArea-->
+
+    <!--Models lanches-->
+    <div class="models">
+        <div class="pasteis-key" data-key="s">
+            <div class="produtos-item-lanches">
+                <a href="">
+                    <div class="produto-item-lanche-img"><img src="" /></div>
+                    <div class="produto-item-lanche-add">+</div>
+                </a>
+                <br>
+                <div class="produto-item-lanche-price">R$</div>
+                <div class="produto-item-lanche-name">--</div>
+                <div class="produto-item-lanche-desc">--</div>
+            </div>
+        </div>
+
+        <div class="cart-produtos" data-key="CART">
+            <img src="" />
+            <div class="cart-produto-name">--</div>
+            <div class="cart-produto-area">
+                <button class="cart-produto-qtmenos">-</button>
+                <div class="cart-produto-qt">1</div>
+                <button class="cart-produto-qtmais">+</button>
+            </div>
+        </div>
+    </div>
+    <!--/Models lanches-->
+
+    <!--Modal lanches-->
+    <div class="lancheWindowArea">
+        <div class="lancheWindowBody">
+            <div class="lancheInfo--cancelMobileButton">Voltar</div>
+            <div class="lancheBig">
+                <img src="" />
+            </div>
+            <div class="lanchesInfo">
+                <h1>--</h1>
+                <div class="lancheInfo--img"><img src="" /></div>
+                <div class="lancheInfo--desc">--</div>
+                <div class="lancheInfo-sabores"></div>
+
+                <div class="lancheInfo--pricearea">
+                    <div class="lancheInfo--sector">Preço</div>
+                    <div class="lancheInfo--price">
+                        <div class="lancheInfo--actualPrice">R$ --</div>
+                        <div class="lancheInfo--qtarea">
+                            <button class="lancheInfo--qtmenos">-</button>
+                            <div class="lancheInfo--qt">1</div>
+                            <button class="lancheInfo--qtmais">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="lancheInfo--addButton">Adicionar ao carrinho</div>
+                <div class="lancheInfo--cancelButton">Cancelar</div>
+            </div>
+        </div>
+    </div>
+    <!--/Modal lanches-->
 
     <!--Modelos de bebidas-->
     <div class="models">
