@@ -1,0 +1,47 @@
+include_once('users.php');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['usuario']) && isset($_POST['senha'])) {
+        $nome = $_POST['usuario'];
+        $senha = $_POST['senha'];
+
+        // Estabeleça a conexão com o banco de dados (substitua as credenciais apropriadas)
+        $conn = new mysqli("localhost", "root", "", "pastelaria");
+
+        // Verifique a conexão
+        if ($conn->connect_error) {
+            die("Conexão com o banco de dados falhou: " . $conn->connect_error);
+        }
+
+        // Use uma declaração preparada para evitar a injeção de SQL
+        $sql = "SELECT * FROM usuario WHERE nome = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $nome);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result) {
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                if (isset($row['senha']) && password_verify($senha, $row['senha'])) {
+                    header("Location: painelAdm.php");
+                    exit;
+                } else {
+                    echo "Login ou senha incorretos. Tente novamente.";
+                }
+            } else {
+                echo "Usuário não encontrado.";
+            }
+        } else {
+            echo "Erro na consulta SQL: " . $conn->error;
+        }
+
+        // Feche a conexão com o banco de dados quando terminar
+        $stmt->close();
+        $conn->close();
+    } else {
+        echo "Campos de usuário e senha não foram preenchidos corretamente.";
+    }
+}
+
+?>

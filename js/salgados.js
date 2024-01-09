@@ -1,6 +1,6 @@
 // Funções de seleção
-const selecione = (elemento) => document.querySelector(elemento);
-const selecioneTodos = (elemento) => document.querySelectorAll(elemento);
+const select = (element) => document.querySelector(element);
+const selectAll = (element) => document.querySelectorAll(element);
 
 // Variáveis globais
 let modalKey = 0;
@@ -9,93 +9,86 @@ let cart = [];
 let produtoSelecionado = null;
 
 // Funções utilitárias
-const valorReal = (valor) => valor.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
+const formatReal = (value) => value.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
 
-const pegarKey = (e) => {
-  let key = e.target.closest('.produtos-item-pasteis1').getAttribute('data-key');
+const getKey = (e) => {
+  const key = e.target.closest('.produtos-item-pasteis1').getAttribute('data-key');
   console.log("Salgado Clicado " + key);
 
-  // Use os dados do salgadoJson com base na chave e armazene-os em produtoSelecionado
   produtoSelecionado = foodJson[key];
-
   quantSalgados = 1;
   modalKey = key;
 
   return key;
 };
 
-const mudarQuant = () => {
-  selecione('.salgadoInfo--qtmais').addEventListener("click", () => {
+const changeQuantity = () => {
+  select('.salgadoInfo--qtmais').addEventListener("click", () => {
     quantSalgados++;
-    selecione(".salgadoInfo--qt").innerHTML = quantSalgados;
+    select(".salgadoInfo--qt").innerHTML = quantSalgados;
   });
 
-  selecione('.salgadoInfo--qtmenos').addEventListener('click', () => {
+  select('.salgadoInfo--qtmenos').addEventListener('click', () => {
     if (quantSalgados > 1) {
       quantSalgados--;
-      selecione(".salgadoInfo--qt").innerHTML = quantSalgados;
+      select(".salgadoInfo--qt").innerHTML = quantSalgados;
     }
   });
 };
 
-const botaoFechar = () => {
-  selecioneTodos(".salgadoInfo--cancelButton, .salgadoInfo--cancelMobileButton").forEach((item) => {
-    item.addEventListener("click", fecharModal);
+const closeButton = () => {
+  selectAll(".salgadoInfo--cancelButton, .salgadoInfo--cancelMobileButton").forEach((item) => {
+    item.addEventListener("click", closeModal);
   });
 };
 
-// Função para abrir a modal
-const abrirModal = () => {
-  const modal = selecione(".salgadoWindowArea");
+const openModal = () => {
+  const modal = select(".salgadoWindowArea");
   modal.style.opacity = 0;
   modal.style.display = "flex";
   setTimeout(() => {
     modal.style.opacity = 1;
 
-    // Preencha os dados da modal somente quando ela for aberta
     if (produtoSelecionado) {
-      preencheDadosModal(produtoSelecionado);
+      fillModalData(produtoSelecionado);
     }
   }, 150);
 };
 
-// Função para fechar a modal
-const fecharModal = () => {
-  const modal = selecione(".salgadoWindowArea");
+const closeModal = () => {
+  const modal = select(".salgadoWindowArea");
   modal.style.opacity = 0;
   setTimeout(() => {
     modal.style.display = "none";
   }, 500);
 };
 
-// Função para lidar com o clique em um salgado
-const handleSalgadoClick = (e) => {
+const handleItemClick = (e) => {
   e.preventDefault();
 
-  let pai = e.target.parentElement;
-  selecione(".salgadoBig").getElementsByTagName('img')[0].src = pai.querySelector('.produto-item-pastel-img').firstChild.src;
+  const parent = e.target.parentElement;
+  select(".salgadoBig").getElementsByTagName('img')[0].src = parent.querySelector('.produto-item-pastel-img').firstChild.src;
 
-  let avo = e.target.parentElement.parentElement;    
-  selecione(".salgadoInfo--nome").textContent = avo.querySelector('.produto-item-pastel-name').textContent;
-  selecione(".salgadoInfo--price").textContent = avo.querySelector('.produto-item-pastel-price').textContent;
-  selecione(".salgadoInfo--desc").textContent = avo.querySelector('.produto-item-pastel-desc').textContent; 
+  const grandparent = e.target.parentElement.parentElement;    
+  select(".salgadoInfo--nome").textContent = grandparent.querySelector('.produto-item-pastel-name').textContent;
+  select(".salgadoInfo--price").textContent = grandparent.querySelector('.produto-item-pastel-price').textContent;
+  select(".salgadoInfo--desc").textContent = grandparent.querySelector('.produto-item-pastel-desc').textContent; 
   
-  abrirModal(); 
+  openModal(); 
 };
 
-// Função para adicionar um salgado ao carrinho
-const adicionarAoCarrinho = () => {
-  selecione(".salgadoInfo--addButton").addEventListener("click", () => {
-    const priceSalgado = parseFloat(selecione(".pastelInfo--actualPrice").innerHTML.replace(valorReal));
-    const size = selecione(".salgado-area").getAttribute('data-key');
-    const identificador = size;
-    const keyCart = cart.findIndex((item) => item.identificador === identificador);
+const addToCart = () => {
+  select(".salgadoInfo--addButton").addEventListener("click", () => {
+    const priceSalgado = parseFloat(select(".pastelInfo--actualPrice").innerHTML.replace(valorReal));
+    const size = select(".salgado-area").getAttribute('data-key');
+    const identifier = size;
+    const cartItemIndex = cart.findIndex((item) => item.identifier === identifier);
 
-    if (keyCart > -1) {
-      cart[keyCart].qt += quantSalgados;
+    if (cartItemIndex > -1) {
+      cart[cartItemIndex].qt += quantSalgados;
     } else {
       const salgado = {
-        identificador,
+        identifier,
         id: size,
         qt: quantSalgados,
         price: priceSalgado,
@@ -103,36 +96,32 @@ const adicionarAoCarrinho = () => {
       cart.push(salgado);
     }
 
-    fecharModal();
-    abrirCarrinho();
-    atualizarCarrinho();
-    finalizarCompra();
+    closeModal();
+    openCart();
+    updateCart();
+    completePurchase();
   });
 };
 
-// Função para atualizar o carrinho
-const atualizarCarrinho = () => {
-  // Exibir o número de itens no carrinho
-  selecione('.menu-openner span').innerHTML = cart.length;
+const updateCart = () => {
+  select('.menu-openner span').innerHTML = cart.length;
 
-  // Mostrar ou ocultar o carrinho
   if (cart.length > 0) {
-    selecione('aside').classList.add('show');
-    selecione('.cart').innerHTML = '';
+    select('aside').classList.add('show');
+    select('.cart').innerHTML = '';
 
     let subtotal = 0;
 
     for (let i in cart) {
-      // Alterado para usar cart[i].id para encontrar o salgado
       const salgadoItem = foodJson.find((item) => item.id == cart[i].id); 
 
       subtotal += cart[i].priceSalgado * cart[i].qt;
 
-      const cartItem = selecione('.models .cart-produtos').cloneNode(true);
-      selecione('.cart').append(cartItem);
+      const cartItem = select('.models .cart-produtos').cloneNode(true);
+      select('.cart').append(cartItem);
 
       const salgadoSizeName = cart[i].tipoSalgado;
-      const salgadoName = `${salgadoItem.nomeSalgado} (${salgadoSizeName})`; // Corrigido para usar nomeSalgado
+      const salgadoName = `${salgadoItem.nomeSalgado} (${salgadoSizeName})`;
 
       cartItem.querySelector('img').src = salgadoItem.img;
       cartItem.querySelector('.cart-produto-name').innerHTML = salgadoName;
@@ -140,7 +129,7 @@ const atualizarCarrinho = () => {
 
       cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
         cart[i].qt++;
-        atualizarCarrinho();
+        updateCart();
       });
 
       cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
@@ -150,70 +139,65 @@ const atualizarCarrinho = () => {
           cart.splice(i, 1);
         }
         if (cart.length < 1) {
-          selecione('header').style.display = 'flex';
+          select('header').style.display = 'flex';
         }
-        atualizarCarrinho();
+        updateCart();
       });
 
-      selecione('.cart').append(cartItem);
+      select('.cart').append(cartItem);
     }
 
     const total = subtotal;
-    selecione('.subtotal span:last-child').innerHTML = valorReal(subtotal);
-    selecione('.total span:last-child').innerHTML = valorReal(total);
+    select('.cart--totalitem subtotal span:last-child').innerHTML = formatReal(subtotal);
+    select('.cart--totalitem total span:last-child').innerHTML = formatReal(total);
   } else {
-    selecione('aside').classList.remove('show');
-    selecione('aside').style.left = '100vw';
+    select('aside').classList.remove('show');
+    select('aside').style.left = '100vw';
   }
 };
 
-// Função para finalizar a compra
-const finalizarCompra = () => {
-  selecione('.cart--finalizar').addEventListener('click', () => {
+const completePurchase = () => {
+  select('.cart--finalizar').addEventListener('click', () => {
     cart = [];
-    selecione(".menu-openner span").innerHTML = 0;
-    selecione('aside').classList.remove('show');
-    selecione('aside').style.left = '100vw';
-    selecione('header').style.display = 'flex';
-    atualizarCarrinho();
+    select(".menu-openner span").innerHTML = 0;
+    select('aside').classList.remove('show');
+    select('aside').style.left = '100vw';
+    select('header').style.display = 'flex';
+    updateCart();
   });
 };
 
-// Função para abrir o carrinho
-const abrirCarrinho = () => {
+const openCart = () => {
   if (cart.length > 0) {
-    selecione('aside').classList.add('show');
-    selecione('header').style.display = 'flex';
+    select('aside').classList.add('show');
+    select('header').style.display = 'flex';
   }
 
-  selecione(".menu-openner").addEventListener('click', () => {
-    selecione('aside').classList.add('show');
-    selecione('aside').style.left = '0';
+  select(".menu-openner").addEventListener('click', () => {
+    select('aside').classList.add('show');
+    select('aside').style.left = '0';
   });
 };
 
-// Função para fechar o carrinho
-const fecharCarrinho = () => {
-  selecione(".menu-closer").addEventListener('click', () => {
-    selecione('aside').style.left = '100vw';
-    selecione('header').style.display = 'flex';
+const closeCart = () => {
+  select(".menu-closer").addEventListener('click', () => {
+    select('aside').style.left = '100vw';
+    select('header').style.display = 'flex';
   });
 };
 
-// Função principal para inicializar tudo
-const iniciar = () => {
-  // Selecione os elementos e adicione os ouvintes de eventos aqui
-  const produtosItems = selecioneTodos(".salgado-area .salgado-area-produto1");
-  produtosItems.forEach((produtoItem) => {
-    produtoItem.addEventListener("click", handleSalgadoClick);
+const initialize = () => {
+  const productsItems = selectAll(".salgado-area .salgado-area-produto1");
+  productsItems.forEach((productItem) => {
+    productItem.addEventListener("click", handleItemClick);
   });
 
-  botaoFechar();
-  mudarQuant();
-  adicionarAoCarrinho();
-  abrirCarrinho();
-  fecharCarrinho();
-  finalizarCompra();
+  closeButton();
+  changeQuantity();
+  addToCart();
+  openCart();
+  closeCart();
+  completePurchase();
 };
 
-iniciar();
+initialize();

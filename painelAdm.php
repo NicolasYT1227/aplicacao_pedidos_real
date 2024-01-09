@@ -1,16 +1,3 @@
-<?php
-     
-    function destroyLogin()
-    {
-        session_start();
-        session_reset();
-        header("location: loginAdm.php");
-        exit;
-    }
-
-    destroyLogin();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,7 +66,7 @@
                     </span>
                     <h3>Conta</h3>
                 </a>
-                <a href="<?php destroyLogin(); ?>">
+                <a href="destroyLogout.php" class="submit">
                     <span class="material-symbols-outlined">
                         logout
                     </span>

@@ -26,16 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $resultado_usuario = mysqli_query($conn, $result);
 
                 if (mysqli_insert_id($conn)) {
-                    // O usuário foi cadastrado com sucesso
+                    echo "O usuário foi cadastrado com sucesso";
+                    header("Location: loginAdm.php");
                 } else {
                     echo "Erro no cadastro";
                 }
             }
         } else {
-            echo "A senha deve ter entre 8 e 16 caracteres.";
+            // echo "A senha deve ter entre 8 e 16 caracteres.";
         }
     } else {
-        echo "O nome de usuário deve ter pelo menos 2 caracteres.";
+       // echo "O nome de usuário deve ter pelo menos 2 caracteres.";
     }
 }
 

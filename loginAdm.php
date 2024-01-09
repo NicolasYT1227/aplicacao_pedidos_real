@@ -1,15 +1,17 @@
-<?php include_once('users.php');
+<?php 
 include_once('users.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$error = ''; // Inicializar a variável de erro
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['usuario']) && isset($_POST['senha'])) {
         $nome = $_POST['usuario'];
         $senha = $_POST['senha'];
 
-        // Estabeleça a conexão com o banco de dados (substitua as credenciais apropriadas)
+        // Estabelecer a conexão com o banco de dados
         $conn = new mysqli("localhost", "root", "", "pastelaria");
 
-        // Verifique a conexão
+        // Verificar a conexão
         if ($conn->connect_error) {
             die("Conexão com o banco de dados falhou: " . $conn->connect_error);
         }
@@ -25,27 +27,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 if (isset($row['senha']) && password_verify($senha, $row['senha'])) {
-                    echo "Login bem-sucedido!";
+                    // Redirecionar para o painel de administração se as credenciais forem corretas
                     header("Location: painelAdm.php");
-                    exit;
+                    exit();
                 } else {
-                    echo "Login ou senha incorretos. Tente novamente.";
+                    $error = "Login ou senha incorretos. Tente novamente.";
                 }
             } else {
-                echo "Usuário não encontrado.";
+                $error = "Usuário não encontrado.";
             }
         } else {
-            echo "Erro na consulta SQL: " . $conn->error;
+            $error = "Erro na consulta SQL: " . $conn->error;
         }
 
-        // Feche a conexão com o banco de dados quando terminar
+        // Fechar a conexão com o banco de dados quando terminar
         $stmt->close();
         $conn->close();
     } else {
-        echo "Campos de usuário e senha não foram preenchidos corretamente.";
+        $error = "Campos de usuário e senha não foram preenchidos corretamente.";
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="card-login">
                 <h1>LOGIN</h1>
 
-                <form method="POST" action="">
+                <form method="POST" action="" class="formInformationUser">
                     <div class="text-main">
                         <label for="usuario">Usuário</label>
                         <input type="text" name="usuario" placeholder="usuário" id="user">
@@ -79,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="text-main">
                         <label for="senha">Senha</label>
                         <input type="password" name="senha" placeholder="insira a sua senha" id="senha">
+                    </div>
+                    <div class="textError_php">
+                        <?php if(isset($error)) { ?>
+                            <p><?php echo $error; ?></p>
+                        <?php } ?>
                     </div>
                     <button class="btn-login">Login</button>
                 </form>

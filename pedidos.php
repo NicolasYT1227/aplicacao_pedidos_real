@@ -406,7 +406,6 @@ $bebidaJson = array();
     </script>
 
     <script src="js/salgados.js"></script>
-    <script src="js/pasteis.js"></script>
 </body>
 
 </html>

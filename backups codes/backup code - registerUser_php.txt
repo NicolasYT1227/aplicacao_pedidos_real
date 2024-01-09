@@ -1,0 +1,43 @@
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    session_start();
+    include_once('userRegis.php');
+
+    $nome = filter_input(INPUT_POST, 'usuario', FILTER_SANITIZE_STRING);
+    $senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_STRING);
+
+    // Verificação do nome do usuário
+    if (!empty($nome) && strlen($nome) >= 2) { // Verifica se não está vazio e tem pelo menos 2 caracteres
+        // Verificação da senha
+        if (strlen($senha) >= 6 && strlen($senha) <= 12) { // Verifica se a senha tem entre 8 e 16 caracteres
+
+            // Verificar se o nome de usuário já existe no banco
+            $checkQuery = "SELECT nome FROM usuario WHERE nome = '$nome'";
+            $checkResult = mysqli_query($conn, $checkQuery);
+
+            if (mysqli_num_rows($checkResult) > 0) {
+                echo "O nome de usuário já existe. Por favor, escolha outro.";
+            } else {
+                // Hash da senha (usando password_hash para armazenamento seguro)
+                $senhaHash = $senha;
+
+                $result = "INSERT INTO usuario (nome, senha) VALUES('$nome', '$senhaHash')";
+                $resultado_usuario = mysqli_query($conn, $result);
+
+                if (mysqli_insert_id($conn)) {
+                    echo "O usuário foi cadastrado com sucesso";
+                    header("Locatio: painelAdm.php");
+                } else {
+                    echo "Erro no cadastro";
+                }
+            }
+        } else {
+            echo "A senha deve ter entre 8 e 16 caracteres.";
+        }
+    } else {
+        echo "O nome de usuário deve ter pelo menos 2 caracteres.";
+    }
+}
+
+?>
