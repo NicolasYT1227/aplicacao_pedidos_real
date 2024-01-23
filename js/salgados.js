@@ -1,3 +1,5 @@
+// Salgados Functions
+
 // Funções de seleção
 const select = (element) => document.querySelector(element);
 const selectAll = (element) => document.querySelectorAll(element);
@@ -9,7 +11,15 @@ let cart = [];
 let produtoSelecionado = null;
 
 // Funções utilitárias
-const formatReal = (value) => value.toLocaleString("pt-br", { style: "currency", currency: "BRL" });
+const formatoReal = (valor) => {
+   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+}
+
+const formatoMonetario = (valor) => {
+  if(valor) {
+      return valor.toFixed(2)
+  }
+}
 
 const getKey = (e) => {
   const key = e.target.closest('.produtos-item-pasteis1').getAttribute('data-key');
@@ -79,9 +89,14 @@ const handleItemClick = (e) => {
 
 const addToCart = () => {
   select(".salgadoInfo--addButton").addEventListener("click", () => {
-    const priceSalgado = parseFloat(select(".pastelInfo--actualPrice").innerHTML.replace(valorReal));
+    const priceSalgado = parseFloat(select(".salgadoInfo--price").textContent.replace("R$", "").replace(",", "."));
     const size = select(".salgado-area").getAttribute('data-key');
     const identifier = size;
+    const nomeSalgados = select(".salgadoInfo--nome").textContent;
+    
+    // Corrigindo o seletor da imagem
+    const imgSalgados = select(".salgadoBig img").getAttribute('src');
+    
     const cartItemIndex = cart.findIndex((item) => item.identifier === identifier);
 
     if (cartItemIndex > -1) {
@@ -90,6 +105,8 @@ const addToCart = () => {
       const salgado = {
         identifier,
         id: size,
+        name: nomeSalgados,
+        img: imgSalgados,
         qt: quantSalgados,
         price: priceSalgado,
       };
@@ -99,7 +116,32 @@ const addToCart = () => {
     closeModal();
     openCart();
     updateCart();
-    completePurchase();
+
+    // Exibir nome e imagem do item no carrinho
+    const lastCartItem = cart[cart.length - 1];
+    const cartItem = select('.models .cart-produtos').cloneNode(true);
+    cartItem.querySelector('img').src = lastCartItem.img;
+    cartItem.querySelector('.cart-produto-name').innerHTML = lastCartItem.name;
+    cartItem.querySelector('.cart-produto-qt').innerHTML = lastCartItem.qt;
+    
+    cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
+      lastCartItem.qt++;
+      updateCart();
+    });
+
+    cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
+      if (lastCartItem.qt > 1) {
+        lastCartItem.qt--;
+      } else {
+        cart.splice(cartItemIndex, 1);
+      }
+      if (cart.length < 1) {
+        select('header').style.display = 'flex';
+      }
+      updateCart();
+    });
+
+    select('.cart').append(cartItem);
   });
 };
 
@@ -112,10 +154,10 @@ const updateCart = () => {
 
     let subtotal = 0;
 
-    for (let i in cart) {
-      const salgadoItem = foodJson.find((item) => item.id == cart[i].id); 
+    for (let i = 0; i < cart.length; i++) {
+      const salgadoItem = salgadoJson.find((item) => item.id == cart[i].id);
 
-      subtotal += cart[i].priceSalgado * cart[i].qt;
+      subtotal += cart[i].price * cart[i].qt;
 
       const cartItem = select('.models .cart-produtos').cloneNode(true);
       select('.cart').append(cartItem);
@@ -148,8 +190,8 @@ const updateCart = () => {
     }
 
     const total = subtotal;
-    select('.cart--totalitem subtotal span:last-child').innerHTML = formatReal(subtotal);
-    select('.cart--totalitem total span:last-child').innerHTML = formatReal(total);
+    select('.cart--totalitem.subtotal span:last-child').innerHTML = formatoReal(subtotal);
+    select('.cart--totalitem.total span:last-child').innerHTML = formatoReal(total);
   } else {
     select('aside').classList.remove('show');
     select('aside').style.left = '100vw';
@@ -201,3 +243,4 @@ const initialize = () => {
 };
 
 initialize();
+// /Salgado Functions.

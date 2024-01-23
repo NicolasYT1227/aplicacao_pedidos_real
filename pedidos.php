@@ -401,8 +401,8 @@ $bebidaJson = array();
     <!--/Modal bebidas-->
 
     <script>
-        let foodJson = <?php echo json_encode($salgadoJson); ?>;
-        let pastel = <?php echo json_encode($pastelJson); ?>;
+        var salgadoJson = <?php echo json_encode($salgadoJson); ?>;
+        var pastelJson = <?php echo json_encode($pastelJson); ?>;
     </script>
 
     <script src="js/salgados.js"></script>

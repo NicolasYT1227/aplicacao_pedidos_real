@@ -4,6 +4,16 @@ const closeBtn = document.getElementById('close-btn');
 const sellBtns = document.querySelectorAll('.btn-sell'); // Seleciona todos os botões de venda
 const sections = document.querySelectorAll('section'); // Seleciona todas as áreas
 
+const modalNewUsers = document.querySelector("span .modalUserRegis");
+const NewUsers = document.querySelector(".newUsers");
+
+modalNewUsers.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    NewUsers.style.display = 'flex';
+    NewUsers.style.opacity = '1';
+})
+
 menuBtn.addEventListener('click', () => {
     sideMenu.style.display = 'block';
 });

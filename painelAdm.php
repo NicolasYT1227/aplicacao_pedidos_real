@@ -149,12 +149,21 @@
                             <h2>Samara</h2>
                         </div>
                         <div class="user">
-                            <img src="image/img-user.jpg">
-                            <h2>Elisangela</h2>
-                        </div>
-                        <div class="user">
                             <img src="image/addUserButton.jpg">
                             <h2>Novo usuário</h2>
+                            <a href="">
+                                <span class="modalUserRegis"></span>
+                                <div class="newUsers">
+                                    <div class="newUserRegis">
+                                        <label for="img">Imagem</label>
+                                        <input type="img" name="image" class="inputImgModal" id="modalNewUser">
+                                    </div>
+                                    <div class="newUserRegis">
+                                        <label for="name">Nome</label>
+                                        <input type="text" name="nome" class="inputNameModal" id="modalNewUser">
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>

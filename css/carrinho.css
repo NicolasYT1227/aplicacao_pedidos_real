@@ -93,7 +93,7 @@ h1, h2, h3, h4 {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.produtos-item, .produtos-item-pasteis, .produtos-item-bebidas, 
+.produtos-item, .produtos-item-salgados, .produtos-item-pasteis, .produtos-item-bebidas, 
 .produtos-item-lanches {
     text-align: center;
     max-width:250px;
@@ -101,7 +101,7 @@ h1, h2, h3, h4 {
     margin:0 auto 50px auto;
 }
 
-.produtos-item a, .produtos-item-pasteis a, 
+.produtos-item a, .produtos-item-salgados a,.produtos-item-pasteis a, 
 .produtos-item-bebidas a, .produtos-item-lanches a {
     display:flex;
     flex-direction: column;
