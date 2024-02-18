@@ -94,9 +94,10 @@ const addToCart = () => {
     const identifier = size;
     const nomeSalgados = select(".salgadoInfo--nome").textContent;
     
-    // Corrigindo o seletor da imagem
+    // Armazenar imagem e nome do produto
     const imgSalgados = select(".salgadoBig img").getAttribute('src');
-    
+    const nomeSalgado = nomeSalgados;
+
     const cartItemIndex = cart.findIndex((item) => item.identifier === identifier);
 
     if (cartItemIndex > -1) {
@@ -111,37 +112,34 @@ const addToCart = () => {
         price: priceSalgado,
       };
       cart.push(salgado);
+
+      // Adicionar novo item ao carrinho
+      const cartItem = select('.models .cart-produtos').cloneNode(true);
+      cartItem.querySelector('.cart-produto-name').innerHTML = nomeSalgado;
+      cartItem.querySelector('img').src = imgSalgados;
+      cartItem.querySelector('.cart-produto-qt').innerHTML = quantSalgados;
+
+      cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
+        cart[cartItemIndex].qt++;
+        updateCart();
+      });
+
+      cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
+        if (cart[cartItemIndex].qt > 1) {
+          cart[cartItemIndex].qt--;
+        } else {
+          cart.splice(cartItemIndex, 1);
+          cartItem.remove();
+        }
+        updateCart();
+      });
+
+      select('.cart').append(cartItem);
     }
 
     closeModal();
     openCart();
     updateCart();
-
-    // Exibir nome e imagem do item no carrinho
-    const lastCartItem = cart[cart.length - 1];
-    const cartItem = select('.models .cart-produtos').cloneNode(true);
-    cartItem.querySelector('img').src = lastCartItem.img;
-    cartItem.querySelector('.cart-produto-name').innerHTML = lastCartItem.name;
-    cartItem.querySelector('.cart-produto-qt').innerHTML = lastCartItem.qt;
-    
-    cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
-      lastCartItem.qt++;
-      updateCart();
-    });
-
-    cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
-      if (lastCartItem.qt > 1) {
-        lastCartItem.qt--;
-      } else {
-        cart.splice(cartItemIndex, 1);
-      }
-      if (cart.length < 1) {
-        select('header').style.display = 'flex';
-      }
-      updateCart();
-    });
-
-    select('.cart').append(cartItem);
   });
 };
 
@@ -160,13 +158,14 @@ const updateCart = () => {
       subtotal += cart[i].price * cart[i].qt;
 
       const cartItem = select('.models .cart-produtos').cloneNode(true);
-      select('.cart').append(cartItem);
+      select('.cart-produtos').append(cartItem);
 
       const salgadoSizeName = cart[i].tipoSalgado;
       const salgadoName = `${salgadoItem.nomeSalgado} (${salgadoSizeName})`;
 
-      cartItem.querySelector('img').src = salgadoItem.img;
-      cartItem.querySelector('.cart-produto-name').innerHTML = salgadoName;
+      cartItem.querySelector('img').src = cart[i].img;
+      cartItem.querySelector('.cart-produto-name').innerHTML = cart[i].name;
+  
       cartItem.querySelector('.cart-produto-qt').innerHTML = cart[i].qt;
 
       cartItem.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
@@ -179,6 +178,13 @@ const updateCart = () => {
           cart[i].qt--;
         } else {
           cart.splice(i, 1);
+          cartItem.remove();
+          i--;
+          const cartSubtotal = select('.cart--totalitem.subtotal span:last-child');
+          const cartTotal = select('.cart--totalitem.total span:last-child');
+          cartSubtotal.innerHTML = '';
+          cartTotal.innerHTML = '';
+          updateCart();
         }
         if (cart.length < 1) {
           select('header').style.display = 'flex';
