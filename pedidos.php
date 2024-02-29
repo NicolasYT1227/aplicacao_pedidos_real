@@ -124,20 +124,28 @@ $bebidaJson = array();
             <?php
                 $resultado = $produto->buscar();
                 while($row = $resultado->fetch_assoc()){
+                    $lancheJson[] = array(
+                        'nome' => $row['name'],
+                        'img' => $row['img'],
+                        'price' => $row['price'],
+                        'description' => $row['description'],
+                        'tipo' => $row['tipo']
+                    );
+                    
                     if($row['tipo'] == 'lanche') {
                 ?>
-                <div class="laches-key" data-key="<?= $row["tipo"] == 'lanche' ?>;">
-                    <div class="produtos-item-lanches">
-                        <a href="">
-                        <div class="produto-item-lanche-img"><img src="<?= $row['img']; ?>;" /></div>
-                        <div class="produto-item-lanche-add">+</div>
-                        </a>
-                        <br>
-                        <div class="produto-item-lanche-price">R$<?= $row['price'] ?></div>
-                        <div class="produto-item-lanche-name"><?= $row['name']; ?></div>
-                        <div class="produto-item-lanche-desc"><?= $row['description']; ?></div>
-                    </div>
-                </div>
+                        <div class="laches-key" data-key="<?= $row["tipo"] == 'lanche' ?>;">
+                            <div class="produtos-item-lanches">
+                                <a href="">
+                                <div class="produto-item-lanche-img"><img src="<?= $row['img']; ?>;" /></div>
+                                <div class="produto-item-lanche-add">+</div>
+                                </a>
+                                <br>
+                                <div class="produto-item-lanche-price">R$<?= $row['price'] ?></div>
+                                <div class="produto-item-lanche-name"><?= $row['name']; ?></div>
+                                <div class="produto-item-lanche-desc"><?= $row['description']; ?></div>
+                            </div>
+                        </div>
         <?php }
         } ?>
         </div>
@@ -256,6 +264,7 @@ $bebidaJson = array();
             </div>
             <div class="pasteisInfo">
                 <h1>--</h1>
+                <div class="pastelInfo--nome"></div>
                 <div class="pastelInfo--img"><img src="" /></div>
                 <div class="pastelInfo--desc">--</div>
                 <div class="pastelInfo-sabores">
@@ -320,6 +329,7 @@ $bebidaJson = array();
             </div>
             <div class="lanchesInfo">
                 <h1>--</h1>
+                <div class="lancheInfo--nome"></div>
                 <div class="lancheInfo--img"><img src="" /></div>
                 <div class="lancheInfo--desc">--</div>
                 <div class="lancheInfo-sabores"></div>
@@ -403,9 +413,12 @@ $bebidaJson = array();
     <script>
         var salgadoJson = <?php echo json_encode($salgadoJson); ?>;
         var pastelJson = <?php echo json_encode($pastelJson); ?>;
+        var lancheJson = <?php echo json_encode($lancheJson); ?>;
     </script>
 
-    <script src="js/salgados.js"></script>
+    <script src="./js/salgados.js"></script>
+    <script src="./js/pasteis.js"></script>
+    <script src="./js//lanches.js"></script>
 </body>
 
 </html>
