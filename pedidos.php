@@ -157,6 +157,13 @@ $bebidaJson = array();
             <?php
             $resultado = $produto->buscar();
             while ($row = $resultado->fetch_assoc()) {
+                $bebidaJson[] = array(
+                    'nome' => $row['name'],
+                    'img' => $row['img'],
+                    'price' => $row['price'],
+                    'description' => $row['description'],
+                    'tipo' => $row['tipo']
+                );
                 if($row['tipo'] == 'bebida') {
             ?>
                     <div class="produtos-item-bebidas" data-key="<?= $row["tipo"] == 'bebida' ?>;">
@@ -414,11 +421,13 @@ $bebidaJson = array();
         var salgadoJson = <?php echo json_encode($salgadoJson); ?>;
         var pastelJson = <?php echo json_encode($pastelJson); ?>;
         var lancheJson = <?php echo json_encode($lancheJson); ?>;
+        var bebidaJson = <?php echo json_encode($bebidaJson); ?>;
     </script>
 
     <script src="./js/salgados.js"></script>
     <script src="./js/pasteis.js"></script>
     <script src="./js//lanches.js"></script>
+    <script src="./js/bebidas.js"></script>
 </body>
 
 </html>

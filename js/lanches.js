@@ -93,18 +93,18 @@ const closeModalL = () => {
 //função para adicionar ao carrinho
 const addToCartL = () => {
     selecioneL('.lancheInfo--addButton').addEventListener('click', () => {
-        const priceLanche = parseFloat(selecioneL('.lancheInfo--price').textContent.replace("R$", "",).replace(".", "."));
+        const priceLanche = parseFloat(selecioneL('.lancheInfo--price').textContent.replace("R$", "").replace(",", "."));
         const sizeL = selecioneL('.lanche-area').getAttribute('data-key');
         const identifierL = sizeL;
         const nomeLanches = selecioneL('.lancheInfo--nome').textContent;
 
-        //armazenar imagem e nome do produto
+        // Armazenar imagem e nome do produto
         const imgLanche = selecioneL('.lancheBig img').getAttribute('src');
         const nomeLanche = nomeLanches;
 
         const cartIndex = cartL.findIndex((item) => item.identifierL === identifierL);
 
-        if(cartIndex > -1){
+        if (cartIndex > -1) {
             cartL[cartIndex].qt += quantLanches;
         } else {
             const lanche = {
@@ -117,7 +117,7 @@ const addToCartL = () => {
             }
             cartL.push(lanche);
 
-            //adicionar novo item ao carrinho
+            // Adicionar novo item ao carrinho
             const cartItem = selecioneL('.models .cart-produtos').cloneNode(true);
             cartItem.querySelector('.cart-produto-name').innerHTML = nomeLanche;
             cartItem.querySelector('img').src = imgLanche;
@@ -129,7 +129,7 @@ const addToCartL = () => {
             });
 
             cartItem.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
-                if(cartL[cartIndex].qt > 1){
+                if (cartL[cartIndex].qt > 1) {
                     cartL[cartIndex].qt--;
                 } else {
                     cartL.splice(cartIndex, 1);
@@ -159,7 +159,7 @@ const updateCartL = () => {
         for(let i = 0; i < cartL.length; i++) {
             const lancheitem = lancheJson.find((item) => item.id == cartL[i].id);
 
-            subtotal += cartL[i].qt * cartL[i].price;
+            subtotal = cartL[i].price * cartL[i].qt;
 
             const cartItem = selecioneL('.models .cart-produtos').cloneNode(true);
             selecioneL('.cart-produtos').append(cartItem);
