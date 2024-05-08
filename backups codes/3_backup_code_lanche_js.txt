@@ -1,26 +1,26 @@
 const selecioneL = (element) => document.querySelector(element);
 const selecioneLAll = (element) => document.querySelectorAll(element);
 
-// variáveis globais
+//variáveis globais
 let modalKeyL = 0;
 let quantLanches = 1;
 let cartL = [];
 let produtoSelecionadoL = null;
 
-// funções monetárias
+//funções monetária
 const formatoRealL = (valor) => {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
 const formatoMonetarioL = (valor) => {
-    if (valor) {
+    if(valor){
         return valor.toFixed(2);
-    }
+    };
 };
 
-// função para capturar as keys
+//função para capturar as keys
 const getKeyL = (e) => {
-    const keyL = e.target.closest('.produtos-item-lanches').getAttribute('data-key');
+    const keyL = e.target.closest('.produtos-item-lanches').getAtrribute('data-key');
     console.log('Lanche clicado' + keyL);
 
     produtoSelecionadoL = foodJson[keyL];
@@ -30,7 +30,7 @@ const getKeyL = (e) => {
     return keyL;
 };
 
-// função para pegar quantidade dos itens
+//função para pegar quantidade dos itens
 const changeQuantityL = () => {
     selecioneL('.lancheInfo--qtmais').addEventListener('click', () => {
         quantLanches++;
@@ -38,21 +38,21 @@ const changeQuantityL = () => {
     });
 
     selecioneL('.lancheInfo--qtmenos').addEventListener('click', () => {
-        if (quantLanches > 1) {
+        if(quantLanches > 1){
             quantLanches--;
             selecioneL('.lancheInfo--qt').innerHTML = quantLanches;
         }
     });
 };
 
-// função para fechar
+//função para fechar
 const closeButtonL = () => {
     selecioneLAll('.lancheInfo--cancelButton, .lancheInfo--cancelMobileButton').forEach((item) => {
         item.addEventListener('click', closeModalL);
     });
 };
 
-// função para clicar no item
+//função para clicar no item
 const handleItemClickLanche = (e) => {
     e.preventDefault();
 
@@ -67,7 +67,7 @@ const handleItemClickLanche = (e) => {
     abrirModalL();
 };
 
-// função para abrir modal
+//função para abrir modal
 const abrirModalL = () => {
     const modal = selecioneL('.lancheWindowArea');
     modal.style.opacity = 0;
@@ -75,13 +75,13 @@ const abrirModalL = () => {
     setTimeout(() => {
         modal.style.opacity = 1;
 
-        if (produtoSelecionadoL) {
+        if(produtoSelecionadoL){
             fillModalData(produtoSelecionadoL);
-        }
+        };
     }, 150);
 };
 
-// função para fechar o modal
+//função para fechar o modal
 const closeModalL = () => {
     const modal = selecioneL('.lancheWindowArea');
     modal.style.opacity = 0;
@@ -90,7 +90,7 @@ const closeModalL = () => {
     }, 500);
 };
 
-// função para adicionar ao carrinho
+//função para adicionar ao carrinho
 const addToCartL = () => {
     selecioneL('.lancheInfo--addButton').addEventListener('click', () => {
         const priceLanche = parseFloat(selecioneL('.lancheInfo--price').textContent.replace("R$", "").replace(",", "."));
@@ -114,7 +114,7 @@ const addToCartL = () => {
                 img: imgLanche,
                 qt: quantLanches,
                 price: priceLanche
-            };
+            }
             cartL.push(lanche);
 
             // Adicionar novo item ao carrinho
@@ -166,9 +166,8 @@ const updateCartL = () => {
 
             cartItem.querySelector('img').src = cartL[i].img;
             cartItem.querySelector('.cart-produto-name').innerHTML = cartL[i].name;
-            cartItem.querySelector('.cart-produto-desc').innerHTML = cartL[i].desc || ''; // Corrigido: Adicionando ou vazio para evitar erros
-            cartItem.querySelector('.cart-produto-price').innerHTML = formatoRealL(precoItem); // Exibe o preço total do item
             cartItem.querySelector('.cart-produto-qt').innerHTML = cartL[i].qt;
+
 
             const index = i; // Salvar o índice em uma variável para usar no evento de clique
 
@@ -198,21 +197,21 @@ const updateCartL = () => {
 };
 
 
-// função para completar a compra
+//função para completar a compra
 const completePurchaseL = () => {
     selecioneL('.cart--finalizar').addEventListener('click', () => {
         cartL = [];
         selecioneL('.menu-openner span').innerHTML = 0;
         selecioneL('aside').classList.remove('show');
-        selecioneL('aside').style.left = '100vw'; // Corrigido: Estava 'styel' em vez de 'style'
+        selecioneL('aside').styel.left = '100vw';
         selecioneL('header').style.display = 'flex';
         updateCartL();
     });
 };
 
-// função para abrir o carrinho
+//função para abrir o carrinho
 const openCartL = () => {
-    if (cartL.length > 0) {
+    if(cartL.length > 0){
         selecioneL('aside').classList.add('show');
         selecioneL('header').style.display = 'flex';
     }
@@ -220,10 +219,10 @@ const openCartL = () => {
     selecioneL('.menu-openner').addEventListener('click', () => {
         selecioneL('aside').classList.add('show');
         selecioneL('aside').style.left = '0';
-    });
+    })
 };
 
-// função para fechar o carrinho
+//função para fechar o carrinho
 const closeCartL = () => {
     selecioneL('.menu-openner').addEventListener('click', () => {
         selecioneL('aside').style.left = '100vw';
@@ -231,7 +230,7 @@ const closeCartL = () => {
     });
 };
 
-// função para iniciar
+//função para iniciar
 const iniciarL = () => {
     const productsItemsL = selecioneLAll('.lanche-area .produtos-item-lanches');
     productsItemsL.forEach((productItemsL) => {

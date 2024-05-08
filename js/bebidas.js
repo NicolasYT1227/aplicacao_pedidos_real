@@ -1,260 +1,211 @@
 const selecioneB = (element) => document.querySelector(element);
-const selecioneAllB = (element) => document.querySelectorAll(element);
+const selecioneBAll = (elements) => document.querySelectorAll(elements);
 
 // Variáveis globais
-let modalKeyB = 0;
-let quantBebidas = 1;
-let cartB = [];
-let produtoSelecionadoB = null;
+let modalKeyBebida = 0;
+let quantBebida = 1;
+let cartBebida = [];
+let produtoSelecionadoBebida = null;
 
 // Funções monetárias
-const formatoRealB = (valor) => {
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-};
+function formatoRealBebida(valor) {
+    return valor.toLocaleString("pt-br", { style: 'currency', currency: 'BRL' });
+}
 
-const formatoMonetarioB = (valor) => {
-    if(valor){
-        return valor.toFixed(2);
-    }
-};
+function formatoMonetarioBebida(valor) {
+    return valor ? valor.toFixed(2) : '';
+}
 
-// Função para pegar keys
-const getKeyB = (e) => {
-    const keyB = e.target.closest('.produtos-item-bebidas').getAttribute('data-key');
-    console.log('Bebida clicada' + keyB);
+// Capturar keys
+function capturarKeyBebida(e) {
+    const key = e.target.closest('.produto-item-bebidas').getAttribute('data-key');
+    console.log('Bebida clicada: ' + key);
 
-    produtoSelecionadoB = foodJson[keyB];
-    quantBebidas = 1;
-    modalKeyB = keyB;
+    produtoSelecionadoBebida = bebidaJson[key];
+    quantBebida = 1;
+    modalKeyBebida = key;
 
-    return keyB;
-};
+    return key;
+}
 
-// Função para capturar a quantidade dos itens
-const changeQuantityB = () => {
-    selecioneB('.bebidaInfo--qtmais').addEventListener('click', () => {
-        quantBebidas++;
-        selecioneB('.bebidaInfo--qt').innerHTML = quantBebidas;
-    });
+// Função para calcular a quantidade
+function alterarQuantidadeBebida(valor) {
+    quantBebida += valor;
+    selecioneB('.bebidaInfo--qt').textContent = quantBebida;
+}
 
-    selecioneB('.bebidaInfo--qtmenos').addEventListener('click', () => {
-        if(quantBebidas > 1){
-            quantBebidas--;
-            selecioneB('.bebidaInfo--qt').innerHTML = quantBebidas;
+// Função para abrir o modal
+function abrirModalBebida() {
+    const modal = selecioneB('.bebidaWindowArea');
+    modal.style.opacity = 0;
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.style.opacity = 1;
+
+        if (produtoSelecionadoBebida) {
+            fillModalData(produtoSelecionadoBebida);
         }
-    });
-};
+    }, 150);
+}
 
-// Função para fechar
-const closeButtonB = () => {
-    selecioneAllB('.bebidaInfo--cancelButton, .bebidaInfo--cancelMobileButton').forEach((item) => {
-        item.addEventListener('click', closeModalB);
-    });
-};
+// Função para fechar o modal
+function fecharModalBebida() {
+    const modal = selecioneB('.bebidaWindowArea');
+    modal.style.opacity = 0;
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 150);
+}
 
-// Função para clicar nos itens
-const handleClickBebida = (e) => {
+// Função do botão de fechar
+function botaoFecharBebida() {
+    selecioneBAll('.bebidaInfo--cancelButton, .bebidaInfo--cancelMobileButton').forEach((item) => {
+        item.addEventListener('click', fecharModalBebida);
+    });
+}
+
+// Função de clique nos itens
+function handleClickBebida(e) {
     e.preventDefault();
 
     const parent = e.target.parentElement;
-    selecioneB('.bebidaBig img').src = parent.querySelector('.produto-item-bebida-img').firstChild.src;
+    selecioneB('.bebidaBig img').src = parent.querySelector('.produto-item-bebida-img').src;
 
-    const grandParent = e.target.parentElement.parentElement;
-    selecioneB('.bebidaInfo--nome').textContent = grandParent.querySelector('.produto-item-bebida-name').textContent;
-    selecioneB('.bebidaInfo--price').textContent = grandParent.querySelector('.produto-item-bebida-price').textContent;
-    selecioneB('.bebidaInfo--desc').textContent = grandParent.querySelector('.produto-item-bebida-desc').textContent;
+    const grandParentB = e.target.parentElement.parentElement;
+    selecioneB('.bebidaInfo--nome').textContent = grandParentB.querySelector('.produto-item-bebida-name').textContent;
+    selecioneB('.bebidaInfo--price').textContent = grandParentB.querySelector('.produto-item-bebida-price').textContent;
+    selecioneB('.bebidaInfo--desc').textContent = grandParentB.querySelector('.produto-item-bebida-desc').textContent;
 
-    abrirModalB();
-};
+    abrirModalBebida();
+}
 
-// Função para abrir o modal
-const abrirModalB = () => {
-    const modalB = selecioneB('.bebidaWindowArea');
-    modalB.style.opacity = 1;
-    modalB.style.display = 'flex';
-
-    setTimeout(() => {
-        modalB.style.opacity = 1;
-
-        if (produtoSelecionadoB) {
-            fillModalData(produtoSelecionadoB);
-        }
-    }, 150);
-};
-
-// Função para fechar o modal
-const closeModalB = () => {
-    const modalB = selecioneB('.bebidaWindowArea');
-    modalB.style.opacity = 0;
-    setTimeout(() => {
-        modalB.style.display = 'none';
-    }, 500);
-};
-
-// Função para adicionar no carrinho
-const addToCartB = () => {
+// Função para adicionar os itens no carrinho
+function adicionarAoCarrinhoBebida() {
     selecioneB('.bebidaInfo--addButton').addEventListener('click', () => {
-        const priceBebida = parseFloat(selecioneB('.bebidaInfo--price').textContent.replace("R$", "").replace(",", "."));
+        const priceBebida = parseFloat(selecioneB('.bebidaInfo--price').textContent.replace("R$", "").replace(".", "."));
         const sizeB = selecioneB('.bebida-area').getAttribute('data-key');
         const identifierB = sizeB;
-        const nomeBebidas = selecioneB('.bebidaInfo--nome').textContent;
+        const nomeBebida = selecioneB('.bebidaInfo--nome').textContent;
 
-        // Armazenar imagem e nome
-        const imgBebidas = selecioneB('.bebidaBig img').getAttribute('src');
-        const nomeBebida = nomeBebidas;
+        // Armazenar imagem e nome dos produtos
+        const imgBebida = selecioneB('.bebidaBig img').getAttribute('src');
+        const nomeBebidaCart = nomeBebida;
 
-        const cartIndexB = cartB.findIndex((item) => item.identifierB === identifierB);
+        const cartItemIndexBebida = cartBebida.findIndex((item) => item.identifierB === identifierB);
 
-        if(cartIndexB > -1){
-            cartB[cartIndexB].qt += quantBebidas;
+        if (cartItemIndexBebida > -1) {
+            cartBebida[cartItemIndexBebida].qt += quantBebida; // Ajuste aqui para adicionar à quantidade existente
         } else {
             const bebida = {
                 identifierB,
                 id: sizeB,
-                name: nomeBebida,
-                img: imgBebidas,
-                qt: quantBebidas,
+                name: nomeBebidaCart,
+                img: imgBebida,
+                qt: quantBebida,
                 price: priceBebida
-            }
-            cartB.push(bebida);
-
-            // Adicionar novo item ao carrinho
-            const cartItemB = selecioneB('.models .cart-produtos').cloneNode(true);
-            cartItemB.querySelector('.cart-produto-name').innerHTML = nomeBebida;
-            cartItemB.querySelector('img').src = imgBebidas;
-            cartItemB.querySelector('.cart-produto-qt').innerHTML = quantBebidas;
-
-            cartItemB.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
-                cartB[cartIndexB].qt++;
-                updateCartB();
-            });
-
-            cartItemB.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
-                if(cartB[cartIndexB].qt > 1){
-                    cartB[cartIndexB].qt--;
-                } else {
-                    cartB.splice(cartIndexB, 1);
-                    cartItemB.remove();
-                }
-                updateCartB();
-            });
-
-            selecioneB('.cart').append(cartItemB);
+            };
+            cartBebida.push(bebida);
         }
-        closeModalB();
-        openCartB();
-        updateCartB();
+
+        fecharModalBebida();
+        abrirCarrinhoBebida();
+        atualizarCarrinhoBebida();
     });
-};
+}
 
-// Função para atualizar o carrinho
-const updateCartB = () => {
-    selecioneB('.menu-openner span').innerHTML = cartB.length;
+// Funções para atualizar o carrinho
+function atualizarCarrinhoBebida() {
+    selecioneB('.menu-openner span').innerHTML = cartBebida.length;
 
-    if(cartB.length > 0){
+    if (cartBebida.length > 0) {
         selecioneB('aside').classList.add('show');
-        selecioneB('header').style.display = 'flex';
+        selecioneB('.cart').innerHTML = '';
 
         let subtotal = 0;
 
-        for(let i=0;i<cartB.length;i++){
-            const bebidaItem = bebidaJson.find((item) => item.id == cartB[i].id);
+        for (let i = 0; i < cartBebida.length; i++) {
+            subtotal += cartBebida[i].qt;
 
-            subtotal += cartB[i].qt * cartB[i].price;
+            const cartItemUpdateIndexB = selecioneB('.models .cart-produtos').cloneNode(true);
+            selecioneB('.cart').appendChild(cartItemUpdateIndexB);
 
-            const cartItemB = selecioneB('.models .cart-produtos').cloneNode(true);
-            selecioneB('.cart-produtos').append(cartItemB);
+            cartItemUpdateIndexB.querySelector('img').src = cartBebida[i].img;
+            cartItemUpdateIndexB.querySelector('.cart-produto-name').innerHTML = cartBebida[i].name;
+            cartItemUpdateIndexB.querySelector('.cart-produto-qt').innerHTML = cartBebida[i].qt;
 
-            const bebidaSizeName = cartB[i].tipoBebida;
-            const bebidaName = `${bebidaItem.nomeBebida} (${bebidaSizeName});`
-
-            cartItemB.querySelector('img').src = cartB[i].img;
-            cartItemB.querySelector('.cart-produto-name').innerHTML = cartB[i].name;
-
-            cartItemB.querySelector('.cart-produto-qt').innerHTML = cartB[i].qt;
-
-            cartItemB.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
-                cartB[i].qt++;
-                updateCartB();
-            });
-
-            cartItemB.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
-                if(cartB[i].qt > 1){
-                    cartB[i].qt--;
-                } else {
-                    cartB.splice(i, 1);
-                    cartItemB.remove();
-                    i--;
-                    const cartSubtotal = selecioneB('.cart-totalitem.subtotal span:last-child');
-                    const cartTotal = selecioneB('.cart-totalitem.total span:last-child');
-                    cartSubtotal = "";
-                    cartTotal = "";
-                    updateCartB();
-                }
-                if(cartB.length < 1){
-                    selecioneB('header').style.display = 'flex';
-                    updateCartB();
-                }
-                    updateCartB();
+            // Ajuste aqui para adicionar evento de clique nos botões de mais e menos
+            (function(index) {
+                cartItemUpdateIndexB.querySelector('.cart-produto-qtmais').addEventListener('click', () => {
+                    cartBebida[index].qt++;
+                    atualizarCarrinhoBebida();
                 });
-                selecioneB('.cart').append(cartItemB);
+
+                cartItemUpdateIndexB.querySelector('.cart-produto-qtmenos').addEventListener('click', () => {
+                    if (cartBebida[index].qt > 1) {
+                        cartBebida[index].qt--;
+                    } else {
+                        cartBebida.splice(index, 1);
+                        cartItemUpdateIndexB.remove();
+                    }
+                    atualizarCarrinhoBebida();
+                });
+            })(i);
         }
 
         const total = subtotal;
-        selecioneB('.cart--totalitem.subtotal span:last-child').innerHTML = formatoMonetarioB(subtotal);
-        selecioneB('.cart--totalitem.total span:last-child').innerHTML = formatoMonetarioB(total);
+        selecioneB('.cart--totalitem.subtotal span:last-child').innerHTML = formatoMonetario(subtotal);
+        selecioneB('.cart--totalitem.total span:last-child').innerHTML = formatoMonetario(total);
     } else {
         selecioneB('aside').classList.remove('show');
         selecioneB('aside').style.left = '100vw';
     }
-};
+}
 
-// Função para completar a compra
-const completePurchaseB = () => {
+// Funções para completar as compras
+function finalizarCompraBebida() {
     selecioneB('.cart--finalizar').addEventListener('click', () => {
-        cartB = [];
+        cartBebida = [];
         selecioneB('.menu-openner span').innerHTML = 0;
         selecioneB('aside').classList.remove('show');
         selecioneB('aside').style.left = '100vw';
         selecioneB('header').style.display = 'flex';
-        updateCartB();
+        atualizarCarrinhoBebida();
     });
-};
+}
 
 // Função para abrir o carrinho
-const openCartB = () => {
-    if(cartB.length > 0){
+function abrirCarrinhoBebida() {
+    if (cartBebida.length > 0) {
         selecioneB('aside').classList.add('show');
         selecioneB('header').style.display = 'flex';
     }
 
     selecioneB('.menu-openner').addEventListener('click', () => {
-        selecioneB('aside').style.left = '100vw';
-        selecioneB('header').style.display = 'flex';
+        selecioneB('aside').classList.add('show');
+        selecioneB('aside').style.left = '0';
     });
-};
+}
 
 // Função para fechar o carrinho
-const closeCartB = () => {
-    selecioneB('.menu-openner').addEventListener('click', () => {
+function fecharCarrinhoBebida() {
+    selecioneB('.menu-closer').addEventListener('click', () => {
         selecioneB('aside').style.left = '100vw';
         selecioneB('header').style.display = 'flex';
     });
-};
+}
 
-// Função para iniciar todo o código
-const iniciarB = () => {
-    const produtoItemsB = selecioneAllB('.bebida-area .produtos-item-bebidas');
-    produtoItemsB.forEach((produtoItemsB) => {
-        produtoItemsB.addEventListener('click', handleClickBebida);
+// Função para iniciar todos os códigos
+function iniciarBebida() {
+    const produtoItemBebida = selecioneBAll('.bebida-area .produtos-item-bebidas');
+    produtoItemBebida.forEach((produtoItemBebida) => {
+        produtoItemBebida.addEventListener('click', handleClickBebida);
     });
 
-    closeButtonB();
-    changeQuantityB();
-    addToCartB();
-    openCartB();
-    closeCartB();
-    completePurchaseB();
-};
+    botaoFecharBebida();
+    adicionarAoCarrinhoBebida();
+    abrirCarrinhoBebida();
+    fecharCarrinhoBebida();
+    finalizarCompraBebida();
+}
 
-iniciarB();
+iniciarBebida();

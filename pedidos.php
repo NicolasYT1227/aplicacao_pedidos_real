@@ -15,6 +15,7 @@ $bebidaJson = array();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aba de pedidos</title>
     <link rel="stylesheet" href="css/carrinho.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -206,7 +207,7 @@ $bebidaJson = array();
         </div>
     </aside>
     <!-- /aside do carrinho -->
-
+    
     <!-- janela modal .salgadoWindowArea -->
     <div class="salgadoWindowArea">
         <div class="salgadoWindowBody">
@@ -362,7 +363,7 @@ $bebidaJson = array();
     <!--Modelos de bebidas-->
     <div class="models">
         <div class="bebidas-key" data-key="s">
-            <div class="produtos-item">
+            <div class="produtos-item-bebidas">
                 <a href="">
                     <div class="produto-item-bebida-img"><img src="" /></div>
                     <div class="produto-item-bebida-add">+</div>
@@ -395,6 +396,7 @@ $bebidaJson = array();
             </div>
             <div class="bebidasInfo">
                 <h1>--</h1>
+                <div class="bebidaInfo--nome"></div>
                 <div class="bebidaInfo--img"><img src="" /></div>
                 <div class="bebidaInfo--desc">--</div>
                 <div class="bebidaInfo-sabores"></div>
@@ -417,6 +419,43 @@ $bebidaJson = array();
     </div>
     <!--/Modal bebidas-->
 
+    <!--Modelos pagamento-->
+    <div class="models">
+        <div class="payment-key" data-key="pa">
+            <div class="payment-option">
+                <div class="payment-option-button"></div>
+                <span class="payment-option-span"></span>
+            </div>
+        </div>
+    </div>
+    <!--/Modelos pagamento-->
+
+    <!--Modal de pagamentos-->
+    <div class="payWindowArea">
+        <div class="payWindowBody">
+            <div class="payment-info">
+                <!--Conteúdo pix-->
+                <div class="pay-pix"></div>
+                <!--/Conteúdo pix-->
+
+                <!--Conteúdo credit-card-->
+                <div class="pay-card">
+                    <div class="payment-infoContent">
+                        <ul class="pay-creditCard">
+                            <button class="bi bi-credit-card"></button>
+                        </ul>
+                    </div>
+                </div>
+                <!--/Conteúdo credit-card-->
+
+                <!--Conteúdo money-->
+                <div class="pay-money"></div>
+            </div>
+            <!--/Conteúdo money-->
+        </div>
+    </div>
+    <!--/Modal de pagamentos-->
+
     <script>
         var salgadoJson = <?php echo json_encode($salgadoJson); ?>;
         var pastelJson = <?php echo json_encode($pastelJson); ?>;
@@ -428,6 +467,51 @@ $bebidaJson = array();
     <script src="./js/pasteis.js"></script>
     <script src="./js//lanches.js"></script>
     <script src="./js/bebidas.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        const addCartS = document.querySelector('.pastelInfo--addButton');
+        const addCartP = document.querySelector('.pastelInfo--addButton');
+        const addCartL = document.querySelector('.lancheInfo--addButton');
+        const addCartB = document.querySelector('.bebidaInfo--addButton');
+
+        $(document).ready(function() {
+        // Evento de clique no botão "Adicionar ao carrinho"
+            $(addCartS).click(function() {
+                // Simulando adição de item ao carrinho
+                // Aqui você pode adicionar sua lógica real de adição ao carrinho
+
+                // Rolar a página até o carrinho
+                $('html, body').animate({
+                scrollTop: $(".cart-produtos").offset().top
+                }, 1000); // 1000 é a duração da animação em milissegundos
+            });
+            
+            $(addCartP).click(function() {
+
+            // Rolar a página até o carrinho
+            $('html, body').animate({
+            scrollTop: $(".cart-produtos").offset().top
+            }, 1000); // 1000 é a duração da animação em milissegundos
+            });
+
+            $(addCartL).click(function() {
+           
+            // Rolar a página até o carrinho
+            $('html, body').animate({
+            scrollTop: $(".cart-produtos").offset().top
+            }, 1000); // 1000 é a duração da animação em milissegundos
+            });
+
+            $(addCartB).click(function() {
+
+            // Rolar a página até o carrinho
+            $('html, body').animate({
+            scrollTop: $(".cart-produtos").offset().top
+            }, 1000); // 1000 é a duração da animação em milissegundos
+            });
+        });
+</script>
 </body>
 
 </html>
